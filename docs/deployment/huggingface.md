@@ -15,12 +15,12 @@ Use Hugging Face Spaces when you want:
 
 Make sure your repository includes:
 
-- `Dockerfile.render`
+- `Dockerfile.huggingface`
 - `main.py`
 - `requirements.txt`
 - the `src/` application package
 
-For Hugging Face Spaces, the current Dockerfile can be reused as a starting point because it already installs Python dependencies and Playwright Chromium.
+Use `Dockerfile.huggingface` for Spaces. It keeps the same Python + Playwright setup as the Render image, but defaults to port `7860` and runs as user `uid 1000`, which is the layout Hugging Face recommends for Docker Spaces.
 
 ## 2. Create a Docker Space
 
@@ -31,7 +31,19 @@ In Hugging Face:
 3. Select visibility according to your needs.
 4. Connect the Space to this repository or upload the project files.
 
-## 3. Configure secrets and variables
+## 3. Optional: validate the Docker image on GitHub Actions
+
+The repository includes `.github/workflows/huggingface-docker.yml`.
+
+It will:
+
+- build `Dockerfile.huggingface` on GitHub Actions
+- target `linux/amd64`, which is the safest default for Hugging Face Spaces
+- smoke test `/api/v1/health` inside the container on port `7860`
+
+This workflow only verifies that the image is suitable for Hugging Face deployment. It does not push or deploy anything to Hugging Face.
+
+## 4. Configure secrets and variables
 
 In the Space settings, add the following secrets:
 
@@ -49,7 +61,7 @@ Add or override variables as needed:
 
 Hugging Face Spaces typically expose applications on port `7860`, so set `SERVER_PORT=7860`.
 
-## 4. Confirm the startup command
+## 5. Confirm the startup command
 
 The container should start the app with:
 
@@ -59,7 +71,7 @@ python main.py
 
 The entrypoint already respects environment-based port configuration.
 
-## 5. Wait for the build to finish
+## 6. Wait for the build to finish
 
 After the Space starts building:
 
@@ -68,7 +80,7 @@ After the Space starts building:
 - confirm Playwright Chromium installs successfully
 - wait for the app to enter the running state
 
-## 6. Validate the deployment
+## 7. Validate the deployment
 
 Once the Space is live, verify:
 

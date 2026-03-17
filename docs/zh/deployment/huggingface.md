@@ -15,12 +15,12 @@
 
 请确认仓库中已经包含：
 
-- `Dockerfile.render`
+- `Dockerfile.huggingface`
 - `main.py`
 - `requirements.txt`
 - `src/` 应用目录
 
-对于 Hugging Face Spaces，当前 Dockerfile 可以直接作为起点，因为它已经包含 Python 依赖安装和 Playwright Chromium 安装步骤。
+Hugging Face Spaces 请优先使用 `Dockerfile.huggingface`。它延续了 Render 镜像里的 Python + Playwright 安装方式，同时默认监听 `7860` 端口，并使用 Hugging Face Docker Spaces 更推荐的 `uid 1000` 用户运行。
 
 ## 2. 创建 Docker Space
 
@@ -31,7 +31,19 @@
 3. 根据需要选择公开或私有。
 4. 将 Space 连接到本仓库，或上传项目文件。
 
-## 3. 配置密钥和变量
+## 3. 可选：通过 GitHub Actions 校验镜像
+
+仓库内已经包含 `.github/workflows/huggingface-docker.yml`。
+
+该工作流会：
+
+- 在 GitHub Actions 中构建 `Dockerfile.huggingface`
+- 以 `linux/amd64` 为目标平台，尽量贴合 Hugging Face Spaces 的默认运行环境
+- 在容器内对 `7860` 端口上的 `/api/v1/health` 做冒烟检查
+
+这个工作流只负责验证镜像是否适合 Hugging Face 部署，不会自动推送或发布到 Hugging Face。
+
+## 4. 配置密钥和变量
 
 在 Space 设置中添加以下 secrets：
 
@@ -49,7 +61,7 @@
 
 Hugging Face Spaces 通常对外暴露 `7860` 端口，因此建议设置 `SERVER_PORT=7860`。
 
-## 4. 确认启动命令
+## 5. 确认启动命令
 
 容器应通过以下命令启动应用：
 
@@ -59,7 +71,7 @@ python main.py
 
 当前入口已经支持通过环境变量读取端口。
 
-## 5. 等待构建完成
+## 6. 等待构建完成
 
 当 Space 开始构建后：
 
@@ -68,7 +80,7 @@ python main.py
 - 确认 Playwright Chromium 安装成功
 - 等待应用进入运行状态
 
-## 6. 验证部署结果
+## 7. 验证部署结果
 
 当 Space 可访问后，先验证：
 

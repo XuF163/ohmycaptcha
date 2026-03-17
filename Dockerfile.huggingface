@@ -1,0 +1,30 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_ROOT_USER_ACTION=ignore \
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
+    HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH \
+    SERVER_HOST=0.0.0.0 \
+    SERVER_PORT=7860
+
+RUN useradd --create-home --uid 1000 user \
+    && mkdir -p /ms-playwright
+
+WORKDIR /home/user/app
+
+COPY requirements.txt /tmp/requirements.txt
+RUN python -m pip install --upgrade pip \
+    && python -m pip install --no-cache-dir -r /tmp/requirements.txt \
+    && playwright install --with-deps chromium \
+    && rm -f /tmp/requirements.txt
+
+COPY --chown=user:user . /home/user/app
+
+USER user
+
+EXPOSE 7860
+
+CMD ["python", "main.py"]
+
