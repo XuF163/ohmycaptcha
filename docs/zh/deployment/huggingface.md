@@ -40,7 +40,7 @@ Hugging Face Spaces 请优先使用 `Dockerfile.huggingface`。它延续了 Rend
 - 在 GitHub Actions 中构建 `Dockerfile.huggingface`
 - 以 `linux/amd64` 为目标平台，尽量贴合 Hugging Face Spaces 的默认运行环境
 
-这个工作流只负责构建适用于 Hugging Face 的镜像，不会自动推送或发布到 Hugging Face。
+这个工作流会构建适用于 Hugging Face 的镜像，并在非 PR 触发时发布到 GitHub Container Registry，地址格式为 `ghcr.io/<owner>/<repo>`。
 
 ## 4. 配置密钥和变量
 

@@ -40,7 +40,7 @@ It will:
 - build `Dockerfile.huggingface` on GitHub Actions
 - target `linux/amd64`, which is the safest default for Hugging Face Spaces
 
-This workflow only builds the Hugging Face-compatible image. It does not push or deploy anything to Hugging Face.
+This workflow builds the Hugging Face-compatible image and publishes it to GitHub Container Registry as `ghcr.io/<owner>/<repo>` on non-PR runs.
 
 ## 4. Configure secrets and variables
 
