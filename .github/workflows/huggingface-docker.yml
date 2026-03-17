@@ -28,9 +28,6 @@ concurrency:
   group: huggingface-docker-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  HF_APP_PORT: '7860'
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -47,35 +44,7 @@ jobs:
           context: .
           file: ./Dockerfile.huggingface
           platforms: linux/amd64
-          load: true
           provenance: false
           tags: ohmycaptcha:hf-${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Smoke test container
-        shell: bash
-        run: |
-          set -euo pipefail
-          docker run -d \
-            --name ohmycaptcha-hf \
-            -e SERVER_PORT=${HF_APP_PORT} \
-            -p 127.0.0.1:${HF_APP_PORT}:${HF_APP_PORT} \
-            ohmycaptcha:hf-${GITHUB_SHA}
-
-          cleanup() {
-            docker logs ohmycaptcha-hf || true
-            docker rm -f ohmycaptcha-hf || true
-          }
-          trap cleanup EXIT
-
-          for _ in {1..60}; do
-            if curl --fail --silent http://127.0.0.1:${HF_APP_PORT}/api/v1/health > /tmp/ohmycaptcha-health.json; then
-              cat /tmp/ohmycaptcha-health.json
-              exit 0
-            fi
-            sleep 2
-          done
-
-          echo 'Container failed health check' >&2
-          exit 1

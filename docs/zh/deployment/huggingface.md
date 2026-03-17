@@ -39,9 +39,8 @@ Hugging Face Spaces 请优先使用 `Dockerfile.huggingface`。它延续了 Rend
 
 - 在 GitHub Actions 中构建 `Dockerfile.huggingface`
 - 以 `linux/amd64` 为目标平台，尽量贴合 Hugging Face Spaces 的默认运行环境
-- 在容器内对 `7860` 端口上的 `/api/v1/health` 做冒烟检查
 
-这个工作流只负责验证镜像是否适合 Hugging Face 部署，不会自动推送或发布到 Hugging Face。
+这个工作流只负责构建适用于 Hugging Face 的镜像，不会自动推送或发布到 Hugging Face。
 
 ## 4. 配置密钥和变量
 
