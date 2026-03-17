@@ -1,30 +1,22 @@
-FROM python:3.11-slim
+FROM mcr.microsoft.com/playwright/python:v1.49.1-jammy
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
+USER pwuser
+
+ENV HOME=/home/pwuser \
+    PATH=/home/pwuser/.local/bin:$PATH \
+    PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_ROOT_USER_ACTION=ignore \
-    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
-    HOME=/home/user \
-    PATH=/home/user/.local/bin:$PATH \
     SERVER_HOST=0.0.0.0 \
     SERVER_PORT=7860
 
-RUN useradd --create-home --uid 1000 user \
-    && mkdir -p /ms-playwright
+WORKDIR $HOME/app
 
-WORKDIR /home/user/app
+COPY --chown=pwuser:pwuser requirements.txt requirements.txt
+RUN python -m pip install --user --no-cache-dir --upgrade pip \
+    && python -m pip install --user --no-cache-dir -r requirements.txt
 
-COPY requirements.txt /tmp/requirements.txt
-RUN python -m pip install --upgrade pip \
-    && python -m pip install --no-cache-dir -r /tmp/requirements.txt \
-    && playwright install --with-deps chromium \
-    && rm -f /tmp/requirements.txt
-
-COPY --chown=user:user . /home/user/app
-
-USER user
+COPY --chown=pwuser:pwuser . .
 
 EXPOSE 7860
 
 CMD ["python", "main.py"]
-

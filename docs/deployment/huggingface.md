@@ -20,7 +20,7 @@ Make sure your repository includes:
 - `requirements.txt`
 - the `src/` application package
 
-Use `Dockerfile.huggingface` for Spaces. It keeps the same Python + Playwright setup as the Render image, but defaults to port `7860` and runs as user `uid 1000`, which is the layout Hugging Face recommends for Docker Spaces.
+Use `Dockerfile.huggingface` for Spaces. It keeps the same Python + Playwright setup as the Render image, but defaults to port `7860` and runs as a non-root user, which is the safer layout Hugging Face recommends for Docker Spaces.
 
 ## 2. Create a Docker Space
 

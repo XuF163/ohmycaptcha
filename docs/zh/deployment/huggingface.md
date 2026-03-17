@@ -20,7 +20,7 @@
 - `requirements.txt`
 - `src/` 应用目录
 
-Hugging Face Spaces 请优先使用 `Dockerfile.huggingface`。它延续了 Render 镜像里的 Python + Playwright 安装方式，同时默认监听 `7860` 端口，并使用 Hugging Face Docker Spaces 更推荐的 `uid 1000` 用户运行。
+Hugging Face Spaces 请优先使用 `Dockerfile.huggingface`。它延续了 Render 镜像里的 Python + Playwright 安装方式，同时默认监听 `7860` 端口，并以非 root 用户运行，更符合 Hugging Face Docker Spaces 的推荐方式。
 
 ## 2. 创建 Docker Space
 
